@@ -1,29 +1,31 @@
 #!/usr/bin/python3
+
+import json
 import requests
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: python3 todo.py employee_id")
-    sys.exit(1)
+def get_employee_todo_progress(employee_id):
+    """Returns information about an employee's TODO list progress."""
 
-employee_id = sys.argv[1]
-url_user = 'https://jsonplaceholder.typicode.com/users/{}'.format(employee_id)
-url_todo = 'https://jsonplaceholder.typicode.com/todos?userId={}'.format(employee_id)
+    response = requests.get(f'https://jsonplaceholder.typicode.com/users/{employee_id}')
+    user = response.json()
 
-try:
-    response_user = requests.get(url_user)
-    response_todo = requests.get(url_todo)
-    response_user.raise_for_status()
-    response_todo.raise_for_status()
-except requests.exceptions.HTTPError as err:
-    print(err)
-    sys.exit(1)
+    response = requests.get(f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}')
+    todos = response.json()
 
-employee_name = response_user.json().get('name')
-total_tasks = len(response_todo.json())
-completed_tasks = sum(task.get('completed') for task in response_todo.json())
-completed_titles = [task.get('title') for task in response_todo.json() if task.get('completed')]
+    # Calculate progress
+    total_tasks = len(todos)
+    tasks_done = sum(1 for t in todos if t['completed'])
+    titles_done = [t['title'] for t in todos if t['completed']]
 
-print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
-for title in completed_titles:
-    print("\t ", title)
+    print(f"Employee {user['name']} is done with tasks ({tasks_done}/{total_tasks}):")
+    for title in titles_done:
+        print(f"\t {title}")
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage: python api_script.py <employee_id>")
+        sys.exit(1)
+
+    employee_id = int(sys.argv[1])
+    get_employee_todo_progress(employee_id)
