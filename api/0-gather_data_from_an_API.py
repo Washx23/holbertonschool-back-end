@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""document"""
+
 
 import json
 import requests
