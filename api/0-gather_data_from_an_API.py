@@ -30,7 +30,7 @@ completed_titles = [task.get('title') for task in
                     response_todo.json() if task.get('completed')]
 
 print(
-    f"Employee {employee_name}is done with tasks({completed_tasks}/\
-        {total_tasks}):")
+    f"Employee {employee_name} is done with tasks({completed_tasks}/\
+{total_tasks}):")
 for title in completed_titles:
     print("\t ", title)
