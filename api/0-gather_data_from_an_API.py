@@ -1,39 +1,36 @@
 #!/usr/bin/python3
-
-
-"""Script to retrieve employee's TODO list progress"""
-
+""" Module """
 
 import json
 import requests
-from sys import argv
+from sys import argv, stdout
 
 
 if __name__ == '__main__':
-    # Fetching full TODO list from the API
+    """ """
     full_api = requests.get("https://jsonplaceholder.typicode.com/todos/")
-    full_data = full_api.json()
 
-    # Fetching user's information from the API
-    user_id = argv[1]
-    user_api = requests.get(f"https://jsonplaceholder.typicode.com/users/{user_id}/")
-    user_data = user_api.json()
+    users_api = requests.get(
+        f"https://jsonplaceholder.typicode.com/users/{argv[1]}/")
+
+    text_full_api = full_api.text
+    text_users_api = users_api.text
+    full_data = json.loads(text_full_api)
+    users_data = json.loads(text_users_api)
 
     total_number_of_tasks = 0
     number_of_done_tasks = 0
-    completed_task_titles = []
+    completed_task = []
 
-    # Counting completed tasks and collecting their titles
     for todo in full_data:
-        if todo['userId'] == int(user_id):
+        if todo['userId'] == users_data['id']:
             if todo['completed']:
-                completed_task_titles.append(todo['title'])
+                completed_task.append(todo)
                 number_of_done_tasks += 1
             total_number_of_tasks += 1
 
     print(
-        f"Employee {user_data['name']} is done with tasks "
-        f"({number_of_done_tasks}/{total_number_of_tasks}):"
-    )
-    for title in completed_task_titles:
-        print(f"\t{title}")
+        f"Employee {users_data['name']} is done with tasks "
+        f"({number_of_done_tasks}/{total_number_of_tasks}):")
+    for task_title in completed_task:
+        print(f"\t {task_title['title']}")
