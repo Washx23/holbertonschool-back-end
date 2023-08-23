@@ -3,15 +3,20 @@
 
 import json
 import requests
-from sys import argv, stdout
+import sys
 
 
 if __name__ == '__main__':
     """ """
+
+    if len(sys.argv) != 2:
+        print("Usage: python3 todo.py employee_id")
+        sys.exit(1)
+
     full_api = requests.get("https://jsonplaceholder.typicode.com/todos/")
 
     users_api = requests.get(
-        f"https://jsonplaceholder.typicode.com/users/{argv[1]}/")
+        f"https://jsonplaceholder.typicode.com/users/{sys.argv[1]}/")
 
     text_full_api = full_api.text
     text_users_api = users_api.text
@@ -31,6 +36,6 @@ if __name__ == '__main__':
 
     print(
         f"Employee {users_data['name']} is done with tasks "
-        f"({number_of_done_tasks}/{total_number_of_tasks}):")
+        f"({number_of_done_tasks}/{total_number_of_tasks}):", file=sys.stdout)
     for task_title in completed_task:
-        print(f"\t {task_title['title']}")
+        print(f"\t {task_title['title']}", file=sys.stdout)
