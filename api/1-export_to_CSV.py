@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """ Documents """
 
+import csv
 import json
 import requests
 import sys
-import csv
 
 if __name__ == '__main__':
     """ documents """
@@ -16,7 +16,8 @@ if __name__ == '__main__':
     user_id = sys.argv[1]
 
     full_api = requests.get("https://jsonplaceholder.typicode.com/todos/")
-    users_api = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(user_id))
+    users_api = requests.get(
+        "https://jsonplaceholder.typicode.com/users/{}".format(user_id))
 
     text_full_api = full_api.text
     text_users_api = users_api.text
@@ -40,4 +41,7 @@ if __name__ == '__main__':
         csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         for task_title in task_complete:
-            csv_writer.writerow([str(users_data['id']), users_data['username'], str(task_title['completed']), task_title['title']])
+            csv_writer.writerow([str(users_data['id']),
+                                users_data['username'],
+                                str(task_title['completed']),
+                                task_title['title']])
