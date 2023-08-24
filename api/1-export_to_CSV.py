@@ -7,7 +7,7 @@ import requests
 import sys
 
 if __name__ == '__main__':
-    """ documents """
+    """ """
 
     if len(sys.argv) != 2:
         print("Usage: python script.py <user_id>")
@@ -30,8 +30,10 @@ if __name__ == '__main__':
 
     for alls in full_data:
         if alls['userId'] == int(user_id):
+            task_complete.append((users_data['id'],
+                                  users_data['username'],
+                                  alls['completed'], alls['title']))
             if alls['completed']:
-                task_complete.append(alls)
                 done_task += 1
             total_task += 1
 
@@ -40,8 +42,7 @@ if __name__ == '__main__':
     with open(csv_file_name, 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
-        for task_title in task_complete:
-            csv_writer.writerow([str(users_data['id']),
-                                users_data['username'],
-                                str(task_title['completed']),
-                                task_title['title']])
+        for task_data in task_complete:
+            csv_writer.writerow(['{}'.format(str(value))
+                                if isinstance(value, bool)
+                                else value for value in task_data])
