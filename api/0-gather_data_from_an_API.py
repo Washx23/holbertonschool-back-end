@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Module """
+""" Documents """
 
 import json
 import requests
@@ -9,33 +9,28 @@ import sys
 if __name__ == '__main__':
     """ """
 
-    if len(sys.argv) != 2:
-        print("Usage: python3 todo.py employee_id")
-        sys.exit(1)
-
     full_api = requests.get("https://jsonplaceholder.typicode.com/todos/")
 
     users_api = requests.get(
-        f"https://jsonplaceholder.typicode.com/users/{sys.argv[1]}/")
+        "https://jsonplaceholder.typicode.com/users/{}/".format(sys.argv[1]))
 
     text_full_api = full_api.text
     text_users_api = users_api.text
     full_data = json.loads(text_full_api)
     users_data = json.loads(text_users_api)
 
-    total_number_of_tasks = 0
-    number_of_done_tasks = 0
-    completed_task = []
+    total_task = 0
+    done_task = 0
+    task_complete = []
 
-    for todo in full_data:
-        if todo['userId'] == users_data['id']:
-            if todo['completed']:
-                completed_task.append(todo)
-                number_of_done_tasks += 1
-            total_number_of_tasks += 1
+    for alls in full_data:
+        if alls['userId'] == users_data['id']:
+            if alls['completed']:
+                task_complete.append(alls)
+                done_task += 1
+            total_task += 1
 
-    print(
-        f"Employee {users_data['name']} is done with tasks "
-        f"({number_of_done_tasks}/{total_number_of_tasks}):", file=sys.stdout)
-    for task_title in completed_task:
-        print(f"\t {task_title['title']}", file=sys.stdout)
+    print("Employee {} is done with tasks({}/{}):"
+          .format(users_data['name'], done_task, total_task), file=sys.stdout)
+    for task_title in task_complete:
+        print("\t {}".format(task_title['title']), file=sys.stdout)
